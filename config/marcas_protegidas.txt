@@ -1,0 +1,13 @@
+# Marcas protegidas pelo Anzol
+#
+# Um domínio por linha. Linhas em branco e linhas que começam com "#" são ignoradas.
+# Coloque aqui o domínio OFICIAL de cada marca que você quer proteger contra imitação.
+# Subdomínios do domínio oficial (ex.: contas.bancoexemplo.example) já são aceitos
+# automaticamente; não é preciso listá-los.
+#
+# Os domínios abaixo são FICTÍCIOS (o final ".example" é reservado para exemplos
+# e nunca existirá na internet). Troque pelas marcas reais na sua instalação.
+
+bancoexemplo.example
+lojaexemplo.example
+correiosexemplo.example
