@@ -41,7 +41,8 @@ script [scripts/testar.py](scripts/testar.py) envia cada um ao Anzol e mostra o 
 
 ![Saída do Anzol para o e-mail fictício de golpe: nível CRÍTICO com 6 sinais](docs/img/golpe-obvio.png)
 
-*O Anzol analisando o e-mail fictício de golpe (`01-golpe-obvio.eml`): nível CRÍTICO, 6 sinais, cada um explicado.*
+*O Anzol analisando o e-mail fictício de golpe (`01-golpe-obvio.eml`): nível CRÍTICO, 6 sinais, cada um explicado.
+A imagem foi feita antes da camada do leitor (IA): hoje a saída também mostra o nível das regras, o do leitor e o parecer.*
 
 Os dois ❌ estão lá de propósito: mostram o que as regras sozinhas ainda erram.
 O 03 é o caso que o [leitor (IA)](#o-leitor-ia) existe para pegar: com um leitor
@@ -75,7 +76,7 @@ Copie o e-mail completo, com cabeçalhos (no seu programa de e-mail, em geral pe
 opção "Mostrar original" ou "Ver código-fonte"), salve como `email.eml` e envie:
 
 ```bash
-curl -X POST http://127.0.0.1:8000/analisar      -H "Content-Type: text/plain; charset=utf-8"      --data-binary @email.eml
+curl -X POST http://127.0.0.1:8000/analisar -H "Content-Type: text/plain; charset=utf-8" --data-binary @email.eml
 ```
 
 Resposta (exemplo com o e-mail fictício da Apostila):
@@ -137,8 +138,10 @@ baixa o nível. As constantes ficam em [app/risco.py](app/risco.py).
 |---|---|
 | `dmarc_falhou` | ALTO |
 | `nome_de_marca_com_dominio_estranho` | ALTO |
-| `dominio_parecido_com_marca` (letras trocadas, letra a mais/a menos) | ALTO |
-| `dominio_parecido_com_marca` (marca dentro de outro domínio) | MÉDIO |
+| `dominio_parecido_com_marca` (letras trocadas por caracteres parecidos, como `0` no lugar de `o`) | ALTO |
+| `dominio_parecido_com_marca` (uma letra a mais, a menos ou trocada) | ALTO |
+| `dominio_parecido_com_marca` (marca disfarçada dentro de outro domínio) | ALTO |
+| `dominio_parecido_com_marca` (marca escrita certinha dentro de outro domínio) | MÉDIO |
 | `link_enganoso` | MÉDIO |
 | `spf_falhou`, `dkim_falhou` | MÉDIO |
 | `reply_to_de_outro_dominio` | MÉDIO |
