@@ -3,7 +3,7 @@
 > 🌱 **Projeto em evolução.**
 
 O **Anzol** é uma API feita em [FastAPI](https://fastapi.tiangolo.com/) para analisar
-e-mails suspeitos de *phishing*, incluindo os links dentro deles. A análise é feita
+e-mails suspeitos de *phishing* (golpes que imitam empresas para roubar dados), incluindo os links dentro deles. A análise é feita
 por regras no código, sem acessar a internet. Um **leitor de IA** pode dar uma
 segunda opinião sobre o texto, mas ele é **opcional e vem desligado por padrão**.
 Para cada e-mail, a API devolve:
@@ -59,7 +59,7 @@ O teste [tests/test_exemplos.py](tests/test_exemplos.py) garante que esta tabela
    ```powershell
    .venv\Scripts\python -m uvicorn app.main:app
    ```
-   Ele está pronto quando aparecer `Uvicorn running on http://127.0.0.1:8000`.
+   Ele está pronto quando aparecer a mensagem (em inglês) `Uvicorn running on http://127.0.0.1:8000`.
 3. Abra **outra** janela do PowerShell, entre na pasta do projeto e rode:
    ```powershell
    .venv\Scripts\python scripts\testar.py
@@ -110,7 +110,7 @@ Resposta (exemplo com o e-mail fictício da Apostila):
 
 Regras da entrada: até **1 MB** (acima disso, erro 413), texto em UTF-8, com
 `Content-Type` `text/plain` ou `message/rfc822` (outros tipos: erro 415), e com o
-cabeçalho `From` (sem ele, ou com entrada vazia: erro 422).
+cabeçalho `From`, o remetente (sem ele, ou com entrada vazia: erro 422).
 
 **Privacidade (LGPD):** o conteúdo do e-mail não é guardado nem escrito em log.
 Os logs registram só o tamanho, os níveis, a quantidade de sinais e o estado do leitor. Nenhum link é
@@ -153,7 +153,7 @@ baixa o nível. As constantes ficam em [app/risco.py](app/risco.py).
                                   │
                                   ▼
                ┌────────────────────────────────────┐
-               │ Fiscal de regras (app/sinais/)     │  offline, determinístico
+               │ Fiscal de regras (app/sinais/)     │  sem internet, determinístico
                │ link enganoso, domínio parecido,   │
                │ cabeçalhos (SPF/DKIM/DMARC...)     │
                └─────────────────┬──────────────────┘
@@ -300,18 +300,19 @@ dados.
   ignorados, porque um golpista pode escrevê-los dentro do e-mail. Mesmo o de
   cima só é confiável se o e-mail foi copiado direto da caixa postal: quem
   monta o e-mail à mão pode colocar um cabeçalho falso no topo. Por isso um
-  `pass` nunca reduz o risco nem apaga outros sinais.
+  resultado `pass` (aprovado) nunca reduz o risco nem apaga outros sinais.
 - **Sem Authentication-Results, sem sinal de autenticação.** E-mails colados à
   mão podem não ter esse cabeçalho, e a ausência não é punida.
-- **From duplicado.** Se houver mais de um `From`, vale o primeiro. (Reply-To e
-  Return-Path repetidos são todos conferidos.)
+- **Remetente (`From`) duplicado.** Se houver mais de um `From`, vale o primeiro.
+  (Os cabeçalhos `Reply-To` e `Return-Path` repetidos são todos conferidos.)
 - **Tempo limite não interrompe o leitor.** Depois do tempo limite a resposta sai
   só com as regras, mas a chamada lenta continua rodando em segundo plano até
   terminar (por isso um leitor real também deve ter tempo limite próprio).
 - **Só links do HTML.** Endereços escritos no corpo em texto simples, em imagens
   ou em anexos ainda não são analisados.
-- **Domínios parecidos só no From e nos links.** Reply-To e Return-Path são
-  comparados com o From, mas não com a lista de marcas.
+- **Domínios parecidos só no remetente e nos links.** Os endereços de resposta
+  (`Reply-To`) e de devolução (`Return-Path`) são comparados com o remetente, mas
+  não com a lista de marcas.
 
 ## Como foi feito
 
@@ -319,7 +320,7 @@ O Anzol foi construído por **Eduardo Carapecov** com o
 [Claude Code](https://claude.com/claude-code), que escreveu a maior parte do código
 sob a direção dele. Eduardo definiu o desenho do projeto (regras no código e a IA
 só podendo subir o risco), decidiu quais limitações aceitar e documentar e revisou
-os testes e os resultados de cada etapa. O histórico de commits mostra a construção
+os testes e os resultados de cada etapa. O histórico de versões no Git mostra a construção
 passo a passo, um sinal de cada vez.
 
 ## Próximos passos
