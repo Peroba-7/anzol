@@ -92,3 +92,27 @@ def dominio_principal(host: str) -> str:
             return ".".join(partes[-(niveis + 1) :])
     # Padrão: sufixo de um nível (.com, .xyz...) + o nome antes dele.
     return ".".join(partes[-2:])
+
+
+def eh_do_dominio(host: str, dominio: str) -> bool:
+    """Verdadeiro se o host é o próprio domínio ou um subdomínio verdadeiro dele.
+
+    Ex.: contas.bancoexemplo.example é de bancoexemplo.example, mas
+    bancoexemplo.example.golpe.example não é.
+    """
+    host, dominio = normalizar_host(host), normalizar_host(dominio)
+    return host == dominio or host.endswith("." + dominio)
+
+
+def separar_dominio(host: str) -> tuple[str, str]:
+    """Divide em (parte controlada pelo dono, sufixo público).
+
+    Ex.: "login.bancoexemplo-seguro.example" -> ("login.bancoexemplo-seguro", "example")
+    """
+    rotulos = host.split(".")
+    # Quantos rótulos formam o sufixo público (ex.: "com.br" = 2). Conta-se
+    # pelo domínio principal, que funciona tanto para ASCII quanto para Unicode.
+    niveis_sufixo = dominio_principal(host).count(".")
+    if niveis_sufixo == 0 or niveis_sufixo >= len(rotulos):
+        return host, ""
+    return ".".join(rotulos[:-niveis_sufixo]), ".".join(rotulos[-niveis_sufixo:])

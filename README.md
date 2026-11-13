@@ -27,6 +27,21 @@ pytest
 ruff check .
 ```
 
+## Limitações conhecidas
+
+- **Authentication-Results falso.** O Anzol só usa o `Authentication-Results`
+  mais acima, que é o do servidor que recebeu a mensagem; os de baixo são
+  ignorados, porque um golpista pode escrevê-los dentro do e-mail. Mesmo o de
+  cima só é confiável se o e-mail foi copiado direto da caixa postal: quem
+  monta o e-mail à mão pode colocar um cabeçalho falso no topo. Por isso um
+  `pass` nunca reduz o risco nem apaga outros sinais.
+- **Sem Authentication-Results, sem sinal de autenticação.** E-mails colados à
+  mão podem não ter esse cabeçalho, e a ausência não é punida.
+- **From duplicado.** Se houver mais de um `From`, vale o primeiro. (Reply-To e
+  Return-Path repetidos são todos conferidos.)
+- **Nada é consultado na internet.** O Anzol não abre links nem consulta DNS;
+  a análise é só do texto.
+
 ## Licença
 
 Distribuído sob a licença MIT. Veja o arquivo [LICENSE](LICENSE).
