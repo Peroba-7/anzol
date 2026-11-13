@@ -1,0 +1,40 @@
+Return-Path: <contato@banc0exemplo-seguro.example>
+Received: from mail.banc0exemplo-seguro.example (203.0.113.45)
+    by mx.provedor.example (192.0.2.10); Fri, 13 Nov 2026 08:41:02 -0300
+Authentication-Results: mx.provedor.example;
+    spf=pass smtp.mailfrom=banc0exemplo-seguro.example;
+    dkim=none;
+    dmarc=fail header.from=bancoexemplo.example
+From: "Banco Exemplo" <atendimento@bancoexemplo.example>
+Reply-To: <suporte@banc0exemplo-seguro.example>
+To: cliente@provedor.example
+Subject: URGENTE: sua conta sera bloqueada em 2 horas
+Date: Fri, 13 Nov 2026 08:40:51 -0300
+Message-ID: <a1b2c3@banc0exemplo-seguro.example>
+MIME-Version: 1.0
+Content-Type: multipart/alternative; boundary="LIMITE-GOLPE"
+
+--LIMITE-GOLPE
+Content-Type: text/plain; charset=utf-8
+
+Prezado cliente,
+
+Detectamos um acesso incomum na sua conta. Para evitar o bloqueio, confirme
+seus dados em até 2 horas: www.bancoexemplo.example
+
+Equipe Banco Exemplo
+
+--LIMITE-GOLPE
+Content-Type: text/html; charset=utf-8
+
+<html>
+  <body>
+    <p>Prezado cliente,</p>
+    <p>Detectamos um acesso incomum na sua conta. Para evitar o
+       <strong>bloqueio</strong>, confirme seus dados em até 2 horas:</p>
+    <p><a href="http://banc0exemplo-seguro.example/login">www.bancoexemplo.example</a></p>
+    <p>Equipe Banco Exemplo</p>
+  </body>
+</html>
+
+--LIMITE-GOLPE--

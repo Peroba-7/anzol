@@ -20,6 +20,42 @@ uvicorn app.main:app --reload
 
 Depois acesse <http://127.0.0.1:8000/saude> ou a documentação em <http://127.0.0.1:8000/docs>.
 
+## Demonstração
+
+A pasta [exemplos/](exemplos/) tem 4 e-mails **fictícios** (domínios `.example`), e o
+script [scripts/testar.py](scripts/testar.py) envia cada um ao Anzol e mostra o resultado.
+
+| Exemplo | O que mostra | Resultado |
+|---|---|---|
+| `01-golpe-obvio.eml` | Golpe da seção 3 da Apostila, com link enganoso | CRÍTICO ✅ |
+| `02-legitimo.eml` | E-mail legítimo do banco fictício | BAIXO ✅ |
+| `03-golpe-bem-feito.eml` | Golpe com domínio próprio e SPF/DKIM/DMARC corretos | BAIXO ❌ (limitação: só as regras não o pegam) |
+| `04-lista-de-discussao.eml` | E-mail legítimo que passou por uma lista de discussão | CRÍTICO ❌ (falso positivo: a lista quebra DKIM e DMARC) |
+
+Os dois ❌ estão lá de propósito: mostram o que as regras sozinhas ainda erram.
+O teste [tests/test_exemplos.py](tests/test_exemplos.py) garante que esta tabela continua verdadeira.
+
+**No Windows (PowerShell), dentro da pasta do projeto:**
+
+1. Instale as dependências (só na primeira vez):
+   ```powershell
+   python -m venv .venv
+   .venv\Scripts\python -m pip install -r requirements.txt
+   ```
+2. Suba o servidor e **deixe essa janela aberta**:
+   ```powershell
+   .venv\Scripts\python -m uvicorn app.main:app
+   ```
+   Ele está pronto quando aparecer `Uvicorn running on http://127.0.0.1:8000`.
+3. Abra **outra** janela do PowerShell, entre na pasta do projeto e rode:
+   ```powershell
+   .venv\Scripts\python scripts\testar.py
+   ```
+   Para testar um arquivo só: `.venv\Scripts\python scripts\testar.py exemplos\02-legitimo.eml`
+4. Para desligar o servidor, volte à primeira janela e aperte `Ctrl+C`.
+
+Também dá para testar pelo navegador em <http://127.0.0.1:8000/docs>.
+
 ## Como analisar um e-mail
 
 Copie o e-mail completo, com cabeçalhos (no seu programa de e-mail, em geral pela

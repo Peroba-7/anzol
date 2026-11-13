@@ -1,0 +1,25 @@
+Return-Path: <premios@clubederecompensas.example>
+Received: from mail.clubederecompensas.example (203.0.113.80)
+    by mx.provedor.example (192.0.2.10); Wed, 11 Nov 2026 19:22:40 -0300
+Authentication-Results: mx.provedor.example;
+    spf=pass smtp.mailfrom=clubederecompensas.example;
+    dkim=pass header.d=clubederecompensas.example;
+    dmarc=pass header.from=clubederecompensas.example
+From: "Central de Recompensas" <premios@clubederecompensas.example>
+Reply-To: <premios@clubederecompensas.example>
+To: cliente@provedor.example
+Subject: Parabéns! Você ganhou R$ 5.000 em pontos
+Date: Wed, 11 Nov 2026 19:22:31 -0300
+Message-ID: <premio-98765@clubederecompensas.example>
+MIME-Version: 1.0
+Content-Type: text/html; charset=utf-8
+
+<html>
+  <body>
+    <p>Parabéns! Seu CPF foi sorteado e você ganhou <strong>R$ 5.000</strong> em pontos.</p>
+    <p>Para resgatar, confirme o número do seu cartão e a senha em até 2 horas.
+       Depois desse prazo o prêmio será cancelado.</p>
+    <p><a href="https://resgate.clubederecompensas.example/premio">Clique aqui para resgatar</a></p>
+    <p>Central de Recompensas</p>
+  </body>
+</html>

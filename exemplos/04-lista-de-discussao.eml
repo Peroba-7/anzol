@@ -1,0 +1,50 @@
+Return-Path: <python-bounces@grupoexemplo.example>
+Received: from lista.grupoexemplo.example (198.51.100.33)
+    by mx.provedor.example (192.0.2.10); Thu, 12 Nov 2026 14:05:09 -0300
+Authentication-Results: mx.provedor.example;
+    spf=pass smtp.mailfrom=grupoexemplo.example;
+    dkim=fail (assinatura nao confere: a lista acrescentou um rodape)
+        header.d=universidadeexemplo.example;
+    dmarc=fail header.from=universidadeexemplo.example
+From: Ana Lima <ana.lima@universidadeexemplo.example>
+Reply-To: Grupo de Python <python@grupoexemplo.example>
+To: python@grupoexemplo.example
+List-Id: Grupo de Python <python.grupoexemplo.example>
+List-Unsubscribe: <https://grupoexemplo.example/sair/python>
+Subject: [python] Encontro do grupo na sexta-feira
+Date: Thu, 12 Nov 2026 14:04:51 -0300
+Message-ID: <encontro-sexta@universidadeexemplo.example>
+MIME-Version: 1.0
+Content-Type: multipart/alternative; boundary="LIMITE-LISTA"
+
+--LIMITE-LISTA
+Content-Type: text/plain; charset=utf-8
+
+Oi, pessoal!
+
+O encontro do grupo vai ser na sexta-feira, às 18h, na sala 12.
+A pauta está em grupoexemplo.example/agenda.
+
+Abraços,
+Ana
+
+--
+Você recebeu esta mensagem por participar do Grupo de Python.
+Para sair: https://grupoexemplo.example/sair/python
+
+--LIMITE-LISTA
+Content-Type: text/html; charset=utf-8
+
+<html>
+  <body>
+    <p>Oi, pessoal!</p>
+    <p>O encontro do grupo vai ser na sexta-feira, às 18h, na sala 12.
+       A pauta está em <a href="https://grupoexemplo.example/agenda">grupoexemplo.example/agenda</a>.</p>
+    <p>Abraços,<br>Ana</p>
+    <hr>
+    <p><small>Você recebeu esta mensagem por participar do Grupo de Python.
+       <a href="https://grupoexemplo.example/sair/python">Sair da lista</a></small></p>
+  </body>
+</html>
+
+--LIMITE-LISTA--

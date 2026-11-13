@@ -1,0 +1,40 @@
+Return-Path: <bounce@envios.bancoexemplo.example>
+Received: from envios.bancoexemplo.example (198.51.100.20)
+    by mx.provedor.example (192.0.2.10); Tue, 10 Nov 2026 09:00:12 -0300
+Authentication-Results: mx.provedor.example;
+    spf=pass smtp.mailfrom=envios.bancoexemplo.example;
+    dkim=pass header.d=bancoexemplo.example;
+    dmarc=pass header.from=bancoexemplo.example
+From: "Banco Exemplo" <avisos@bancoexemplo.example>
+Reply-To: <atendimento@bancoexemplo.example>
+To: cliente@provedor.example
+Subject: Seu extrato de outubro está disponível
+Date: Tue, 10 Nov 2026 09:00:05 -0300
+Message-ID: <extrato-2026-10@bancoexemplo.example>
+MIME-Version: 1.0
+Content-Type: multipart/alternative; boundary="LIMITE-EXTRATO"
+
+--LIMITE-EXTRATO
+Content-Type: text/plain; charset=utf-8
+
+Olá,
+
+Seu extrato de outubro já está disponível no aplicativo e no site
+www.bancoexemplo.example/extrato.
+
+Lembre-se: o Banco Exemplo nunca pede senha por e-mail.
+
+--LIMITE-EXTRATO
+Content-Type: text/html; charset=utf-8
+
+<html>
+  <body>
+    <p>Olá,</p>
+    <p>Seu extrato de outubro já está disponível no aplicativo e no site
+       <a href="https://www.bancoexemplo.example/extrato">www.bancoexemplo.example/extrato</a>.</p>
+    <p><a href="https://contas.bancoexemplo.example">Acessar minha conta</a></p>
+    <p>Lembre-se: o Banco Exemplo nunca pede senha por e-mail.</p>
+  </body>
+</html>
+
+--LIMITE-EXTRATO--
