@@ -1,0 +1,32 @@
+# Integração contínua: roda o ruff e os testes a cada push
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  qualidade-e-testes:
+    name: Ruff e pytest
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Baixar o código
+        uses: actions/checkout@v4
+
+      - name: Configurar o Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Instalar dependências
+        run: pip install -r requirements.txt
+
+      - name: Verificar estilo e erros com ruff
+        run: |
+          ruff check .
+          ruff format --check .
+
+      - name: Rodar os testes com pytest
+        run: pytest -v

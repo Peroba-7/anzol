@@ -1,0 +1,61 @@
+# ---- Segredos e dados sensíveis (nunca versionar) ----
+.env
+.env.*
+!.env.example
+*.sql
+data/
+*.pem
+*.key
+
+# ---- Bytecode e caches do Python ----
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# ---- Empacotamento ----
+build/
+dist/
+*.egg-info/
+.eggs/
+wheels/
+pip-wheel-metadata/
+*.egg
+
+# ---- Ambientes virtuais ----
+.venv/
+venv/
+env/
+ENV/
+.python-version
+.pdm-python
+__pypackages__/
+
+# ---- Testes e cobertura ----
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+.tox/
+.nox/
+.hypothesis/
+
+# ---- Ferramentas de análise ----
+.ruff_cache/
+.mypy_cache/
+.pyre/
+.pytype/
+
+# ---- Jupyter ----
+.ipynb_checkpoints/
+
+# ---- Logs ----
+*.log
+
+# ---- Editores e sistema operacional ----
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
