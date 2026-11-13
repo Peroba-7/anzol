@@ -43,6 +43,16 @@ class Nivel(StrEnum):
     CRITICO = "CRÍTICO"
 
 
+# Ordem dos níveis, do menor para o maior.
+ORDEM_NIVEIS: tuple[Nivel, ...] = (Nivel.BAIXO, Nivel.MEDIO, Nivel.ALTO, Nivel.CRITICO)
+
+
+def maior_nivel(base: Nivel, *outros: Nivel | None) -> Nivel:
+    """O maior entre os níveis dados (None é ignorado). Nunca devolve menos que `base`."""
+    candidatos = [base, *(n for n in outros if n is not None)]
+    return max(candidatos, key=ORDEM_NIVEIS.index)
+
+
 @dataclass(frozen=True, slots=True)
 class SinalConsiderado:
     """Um tipo de sinal, com o maior peso que apareceu e quantas vezes apareceu."""

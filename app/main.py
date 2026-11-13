@@ -2,16 +2,22 @@
 
 Privacidade (LGPD): o conteúdo do e-mail enviado para /analisar nunca é guardado
 nem escrito em log. Os logs registram só dados técnicos (tamanho, nível, número
-de sinais e tipo de erro), nunca o texto, os endereços ou os domínios do e-mail.
+de sinais, estado do leitor e tipo de erro), nunca o texto, os endereços ou os
+domínios do e-mail.
+
+Leitor (IA): escolhido por ANZOL_LEITOR (padrão: desligado). O nível final é o
+MAIOR entre o das regras e o sugerido pelo leitor: a IA nunca baixa o risco.
 """
 
 import logging
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.concurrency import run_in_threadpool
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
-from app.analise import EmailInvalido, analisar_email
+from app.analise import EmailInvalido
+from app.decisao import analisar_com_leitor
+from app.leitor import obter_leitor, tempo_limite
 
 logger = logging.getLogger("anzol")
 
@@ -22,7 +28,8 @@ TAMANHO_MAXIMO_BYTES = 1_000_000
 TIPOS_ACEITOS = frozenset({"text/plain", "message/rfc822"})
 
 AVISO = (
-    "Este resultado foi gerado automaticamente por regras e pode errar. Ele não "
+    "Este resultado foi gerado automaticamente (por regras e, se ligado, por um "
+    "leitor de IA) e pode errar. Ele não "
     "substitui o julgamento de uma pessoa: na dúvida, não clique em links, não "
     "envie dados e confirme pelo canal oficial da empresa."
 )
@@ -33,7 +40,7 @@ app = FastAPI(
         "API que analisa e-mails e URLs suspeitos de phishing e devolve "
         "nível de risco, sinais encontrados e um parecer em português."
     ),
-    version="0.2.0",
+    version="0.3.0",
 )
 
 
@@ -45,7 +52,13 @@ class SinalSaida(BaseModel):
 
 
 class RespostaAnalise(BaseModel):
-    nivel: str
+    nivel: str = Field(description="Nível final: o maior entre o das regras e o do leitor.")
+    nivel_regras: str = Field(description="Nível calculado só pelas regras.")
+    nivel_leitor: str | None = Field(description="Nível sugerido pelo leitor (IA), se houver.")
+    parecer: str = Field(description="Explicação em português, montada pelo código.")
+    leitor_usado: str = Field(description="Leitor configurado: desligado, falso...")
+    aviso_leitor: str | None = Field(description="Preenchido quando o leitor está indisponível.")
+    indicios_leitor: list[str] = Field(description="Indícios apontados pelo leitor (validados).")
     motivo: str
     sinais: list[SinalSaida]
     aviso: str
@@ -119,7 +132,9 @@ async def analisar(request: Request) -> RespostaAnalise:
         raise HTTPException(422, "O e-mail contém caracteres inválidos.")
 
     try:
-        avaliacao = await run_in_threadpool(analisar_email, texto)
+        decisao = await run_in_threadpool(
+            analisar_com_leitor, texto, obter_leitor(), tempo_limite()
+        )
     except EmailInvalido as erro:
         raise HTTPException(422, str(erro)) from None
     except Exception as erro:  # noqa: BLE001
@@ -127,14 +142,25 @@ async def analisar(request: Request) -> RespostaAnalise:
         logger.error("Falha inesperada na análise (%s).", type(erro).__name__)
         raise HTTPException(500, "Erro interno ao analisar o e-mail.") from None
 
+    avaliacao = decisao.avaliacao
     logger.info(
-        "Análise concluída: %d bytes, nível %s, %d sinal(is).",
+        "Análise concluída: %d bytes, nível %s (regras %s, leitor %s: %s), %d sinal(is).",
         len(corpo),
-        avaliacao.nivel,
+        decisao.nivel,
+        decisao.nivel_regras,
+        decisao.leitor.nome,
+        decisao.leitor.estado,
         len(avaliacao.sinais),
     )
+    sugestao = decisao.leitor.sugestao
     return RespostaAnalise(
-        nivel=avaliacao.nivel.value,
+        nivel=decisao.nivel.value,
+        nivel_regras=decisao.nivel_regras.value,
+        nivel_leitor=decisao.nivel_leitor.value if decisao.nivel_leitor else None,
+        parecer=decisao.parecer,
+        leitor_usado=decisao.leitor.nome,
+        aviso_leitor=decisao.leitor.aviso,
+        indicios_leitor=list(sugestao.indicios) if sugestao else [],
         motivo=avaliacao.motivo,
         sinais=[
             SinalSaida(

@@ -74,6 +74,13 @@ def mostrar(caminho: Path, codigo: int, dados: dict) -> None:
         return
 
     print(f"NÍVEL DE RISCO: {dados['nivel']}")
+    nivel_leitor = dados.get("nivel_leitor") or "sem sugestão"
+    print(
+        f"  (regras: {dados.get('nivel_regras', dados['nivel'])}; "
+        f"leitor {dados.get('leitor_usado', 'desligado')}: {nivel_leitor})"
+    )
+    if dados.get("aviso_leitor"):
+        print(recuar(dados["aviso_leitor"], "Atenção: "))
     print(recuar(dados["motivo"], "Motivo: "))
     sinais = dados["sinais"]
     if not sinais:
@@ -84,6 +91,8 @@ def mostrar(caminho: Path, codigo: int, dados: dict) -> None:
             vezes = f", {sinal['ocorrencias']}x" if sinal["ocorrencias"] > 1 else ""
             print(f"  [{sinal['peso']}{vezes}] {sinal['nome']}")
             print(recuar(sinal["descricao"], "      "))
+    if dados.get("parecer"):
+        print(recuar(dados["parecer"], "Parecer: "))
     print(recuar(dados["aviso"], "Aviso: "))
 
 

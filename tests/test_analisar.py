@@ -286,7 +286,7 @@ def test_erro_inesperado_nao_vaza_conteudo(caplog, capsys, monkeypatch):
     def quebra(email_bruto, *_args, **_kwargs):
         raise RuntimeError(f"falhou em: {email_bruto}")
 
-    monkeypatch.setattr(main, "analisar_email", quebra)
+    monkeypatch.setattr(main, "analisar_com_leitor", quebra)
     caplog.set_level(logging.DEBUG)
 
     resposta = postar(_email_com_marcador())

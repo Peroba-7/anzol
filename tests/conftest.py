@@ -28,3 +28,10 @@ def sem_internet(monkeypatch):
 
     monkeypatch.setattr(socket.socket, "connect", connect_vigiado)
     monkeypatch.setattr(socket, "getaddrinfo", getaddrinfo_bloqueado)
+
+
+@pytest.fixture(autouse=True)
+def leitor_padrao(monkeypatch):
+    """Cada teste começa com o leitor desligado, mesmo que a máquina tenha ANZOL_LEITOR."""
+    monkeypatch.delenv("ANZOL_LEITOR", raising=False)
+    monkeypatch.delenv("ANZOL_LEITOR_TEMPO_LIMITE", raising=False)
