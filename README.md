@@ -32,6 +32,10 @@ script [scripts/testar.py](scripts/testar.py) envia cada um ao Anzol e mostra o 
 | `03-golpe-bem-feito.eml` | Golpe com domínio próprio e SPF/DKIM/DMARC corretos | BAIXO ❌ (limitação: só as regras não o pegam) |
 | `04-lista-de-discussao.eml` | E-mail legítimo que passou por uma lista de discussão | CRÍTICO ❌ (falso positivo: a lista quebra DKIM e DMARC) |
 
+![Saída do Anzol para o e-mail fictício de golpe: nível CRÍTICO com 6 sinais](docs/img/golpe-obvio.png)
+
+*O Anzol analisando o e-mail fictício de golpe (`01-golpe-obvio.eml`): nível CRÍTICO, 6 sinais, cada um explicado.*
+
 Os dois ❌ estão lá de propósito: mostram o que as regras sozinhas ainda erram.
 O teste [tests/test_exemplos.py](tests/test_exemplos.py) garante que esta tabela continua verdadeira.
 
