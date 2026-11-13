@@ -17,6 +17,11 @@ class Peso(IntEnum):
     MEDIO = 25
     ALTO = 50
 
+    @property
+    def rotulo(self) -> str:
+        """Nome para exibir, com acento: BAIXO, MÉDIO ou ALTO."""
+        return "MÉDIO" if self is Peso.MEDIO else self.name
+
 
 @dataclass(frozen=True, slots=True)
 class Sinal:

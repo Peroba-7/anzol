@@ -30,13 +30,12 @@ topo, e o Anzol não tem como saber. Por isso o "pass" nunca reduz o risco.
 import re
 import unicodedata
 from collections.abc import Iterable
-from email import policy
 from email.message import Message
-from email.parser import Parser
 
 from app.dominios import dominio_principal, eh_do_dominio
 from app.enderecos import desdobrar, enderecos_em, separar_nome_e_endereco, validar_host
 from app.marcas import nome_da_marca, resolver_marcas
+from app.mensagem import ler_cabecalhos, primeiro_cabecalho
 from app.sinais.base import Peso, Sinal
 from app.sinais.dominio_parecido import TAMANHO_MINIMO_CONTIDA, esqueleto
 
@@ -90,20 +89,6 @@ _METODO_RESULTADO = re.compile(r"^\s*(spf|dkim|dmarc)\s*=\s*([a-z]+)", re.IGNORE
 # ---------------------------------------------------------------- leitura
 
 
-def _ler_cabecalhos(email_bruto: str) -> Message:
-    """Lê só os cabeçalhos do e-mail bruto, sem nunca levantar erro."""
-    texto = (email_bruto or "").replace("\r\n", "\n").lstrip("\n")
-    # compat32 devolve os valores como texto puro, sem tentar interpretá-los,
-    # o que evita erros com cabeçalhos malformados.
-    return Parser(policy=policy.compat32).parsestr(texto, headersonly=True)
-
-
-def _primeiro(mensagem: Message, nome: str) -> str | None:
-    """Primeira ocorrência (a mais acima) de um cabeçalho, ignorando maiúsculas."""
-    valores = mensagem.get_all(nome) or []
-    return str(valores[0]) if valores else None
-
-
 def _resultados_autenticacao(cabecalho: str) -> list[tuple[str, str]]:
     """Extrai pares (método, resultado) de um Authentication-Results."""
     texto = desdobrar(cabecalho)
@@ -141,7 +126,7 @@ def _texto_comparavel(texto: str) -> str:
 
 def _sinais_de_autenticacao(mensagem: Message) -> list[Sinal]:
     # Só o MAIS ACIMA vale (ver "LIMITAÇÃO CONHECIDA" no topo do arquivo).
-    cabecalho = _primeiro(mensagem, "Authentication-Results")
+    cabecalho = primeiro_cabecalho(mensagem, "Authentication-Results")
     if cabecalho is None:
         return []  # ausência do cabeçalho não é punida
 
@@ -223,10 +208,12 @@ def detectar_sinais_de_cabecalho(
 
     marcas: domínios oficiais protegidos; se omitida, usa config/marcas_protegidas.txt.
     """
-    mensagem = _ler_cabecalhos(email_bruto)
+    mensagem = ler_cabecalhos(email_bruto)
     lista_marcas = resolver_marcas(marcas)
 
-    nome_exibicao, endereco_from = separar_nome_e_endereco(_primeiro(mensagem, "From") or "")
+    nome_exibicao, endereco_from = separar_nome_e_endereco(
+        primeiro_cabecalho(mensagem, "From") or ""
+    )
     host_from = _host_do_endereco(endereco_from)
 
     return [

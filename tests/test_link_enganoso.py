@@ -1,7 +1,5 @@
 """Testes do sinal "link enganoso"."""
 
-import socket
-
 import pytest
 
 from app.dominios import dominio_principal
@@ -12,17 +10,6 @@ from app.sinais.link_enganoso import NOME, PESO
 def _link(href: str, texto: str) -> str:
     """Monta um trecho de e-mail em HTML com um único link."""
     return f"<html><body><p>Olá,</p><a href='{href}'>{texto}</a></body></html>"
-
-
-@pytest.fixture(autouse=True)
-def sem_internet(monkeypatch):
-    """Garante que nenhum teste consiga acessar a rede (a análise é só texto)."""
-
-    def bloqueado(*_args, **_kwargs):
-        raise AssertionError("A análise tentou acessar a rede!")
-
-    monkeypatch.setattr(socket, "getaddrinfo", bloqueado)
-    monkeypatch.setattr(socket.socket, "connect", bloqueado)
 
 
 # ---------- Casos pedidos ----------

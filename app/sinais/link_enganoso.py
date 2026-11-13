@@ -109,19 +109,23 @@ def _mesmo_dono(host_a: str, host_b: str) -> bool:
     return dominio_principal(host_a) == dominio_principal(host_b)
 
 
+def extrair_links(html: str) -> list[tuple[str, str]]:
+    """Devolve os pares (href, texto visível) de todos os links <a> do HTML."""
+    coletor = _ColetorDeLinks()
+    coletor.feed(html)
+    coletor.close()
+    return coletor.links
+
+
 def detectar_links_enganosos(html: str) -> list[Sinal]:
     """Analisa o HTML de um e-mail e devolve um sinal por link enganoso.
 
     Links repetidos (mesmo domínio no texto e no destino) geram um só sinal.
     """
-    coletor = _ColetorDeLinks()
-    coletor.feed(html)
-    coletor.close()
-
     sinais: list[Sinal] = []
     pares_vistos: set[tuple[str, str]] = set()
 
-    for href, texto in coletor.links:
+    for href, texto in extrair_links(html):
         if href.strip().lower().startswith("mailto:"):
             continue
         host_texto = _host_do_texto(texto)

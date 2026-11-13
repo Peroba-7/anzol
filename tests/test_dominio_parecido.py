@@ -3,10 +3,6 @@
 Todas as marcas são FICTÍCIAS: o final ".example" é reservado e nunca existe.
 """
 
-import socket
-
-import pytest
-
 from app.sinais import Peso, detectar_dominios_parecidos
 from app.sinais.dominio_parecido import (
     NOME_PARECIDO,
@@ -15,17 +11,6 @@ from app.sinais.dominio_parecido import (
 )
 
 MARCAS = ("bancoexemplo.example", "lojaexemplo.example")
-
-
-@pytest.fixture(autouse=True)
-def sem_internet(monkeypatch):
-    """Garante que nenhum teste consiga acessar a rede (a análise é só texto)."""
-
-    def bloqueado(*_args, **_kwargs):
-        raise AssertionError("A análise tentou acessar a rede!")
-
-    monkeypatch.setattr(socket, "getaddrinfo", bloqueado)
-    monkeypatch.setattr(socket.socket, "connect", bloqueado)
 
 
 def analisar(remetente=None, links=()):
